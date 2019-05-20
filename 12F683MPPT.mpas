@@ -1,0 +1,246 @@
+program _12F683MPPT;
+
+{ 12F683 MPPT controller
+
+  Copyright (C) 2015-2019 rasberryrabbit
+
+  This source is free software; you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or MPL 1.1
+  any later version.
+
+  This code is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
+
+  A copy of the GNU General Public License is available on the World Wide Web
+  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+  to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+  MA 02111-1307, USA.
+}
+
+
+{$define USE_EEPROM_LM358DIFF}
+{$define Write_OPAMP_DIFF}
+
+const
+   PWM_MAX = 250;
+   PWM_MIN = 10;
+   PWM_MID = PWM_MAX div 2-5;
+
+   TMR1L_LOAD=$30;
+   TMR1H_LOAD=$F8;           // 2ms, 65536 - 2000
+
+   VOLMUL = 25 div 6;        // 25V(1024) : 6A(1024), don't exceed 8
+   _UPDATE_INT = 30 div 2;   // consider 90ms
+   _PWM_CHECK = 4500 div 2;
+
+   cLM358_diff = 0;
+   adc_max_loop = 5;     // 8
+
+label
+   CONTLOOP;
+
+var
+   LED1:sbit at GP5_bit;
+   Write_OPAMP : sbit at GP3_bit;
+   // GP2 : PWM
+   //VOLPWM : byte;
+   TICK_1000 : word;
+
+   LED1_tm : byte;
+   prevtime, powertime, voltime : word;
+   adc_vol, adc_cur, vol_prev1, vol_prev2 : word;
+   power_prev, power_curr : dword;
+   i, LM358_diff : byte;
+   flag_inc : boolean;
+   wtmp, xtmp : word;
+
+procedure Interrupt(); iv 0x0004; ics ICS_AUTO;
+begin
+     if T1IF_bit=1 then begin
+       TMR1H:=TMR1H_LOAD;
+       TMR1L:=TMR1L_LOAD;
+       T1IF_bit:=0;
+       Inc(TICK_1000);
+     end;
+end;
+
+begin
+     CMCON0:=7;
+     ANS3_bit:=1;        // voltage sense
+     ANS0_bit:=1;        // current sense
+
+     TRISIO0_bit:=1;      // AN0
+     TRISIO4_bit:=1;      // AN3
+     TRISIO1_bit:=1;      // VREF
+
+     TRISIO5_bit:=0;      // LED
+     VCFG_bit:=1;
+     CHS1_bit:=1;
+     ADFM_bit:=1;
+
+     TRISIO2_bit:=1;      // PWM
+     PR2:=$65;            // 8bit
+     CCP1CON:=%00001111;  // PWM active low
+     CCPR1L:=0;
+     TMR2IF_bit:=0;
+     TMR2ON_bit:=1;
+     ClrWDT;
+     while TMR2IF_bit=0 do ;
+     TRISIO2_bit:=0;      // PWM
+
+     LED1:=0;
+     LED1_tm:=100;
+     TICK_1000:=0;
+
+     LM358_diff:=cLM358_diff;
+     Delay_100ms;
+     Delay_100ms;
+     ClrWDT;
+     {$ifdef Write_OPAMP_DIFF}
+     if Write_OPAMP=0 then begin
+       Delay_100ms;
+       Delay_100ms;
+       adc_cur:=ADC_Read(0);
+       EEPROM_Write(0, Lo(adc_cur));
+       Delay_100ms;
+       LED1:=1;
+       Delay_ms(700);
+       LED1:=0;
+     end;
+     ClrWDT;
+     {$endif}
+
+     {$ifdef USE_EEPROM_LM358DIFF}
+     Delay_100ms;
+     LM358_diff:=EEPROM_Read(0);
+     {$endif}
+     if LM358_diff>$1f then
+       LM358_diff:=0;
+
+     T1CKPS1_bit:=0;
+     T1CKPS0_bit:=1;               // timer prescaler 1:2
+     TMR1CS_bit:=0;
+     TMR1L:=TMR1L_LOAD;
+     TMR1H:=TMR1H_LOAD;
+     T1IF_bit:=0;
+
+     adc_vol:=0;
+     adc_cur:=0;
+     power_curr:=0;
+
+     TMR1IE_bit:=1;
+     PEIE_bit:=1;
+
+     GIE_bit:=1;                   // enable Interrupt
+
+     TMR1ON_bit:=1;
+
+     CCPR1L:=PWM_MIN;
+     flag_inc:=True;
+     vol_prev1:=0;
+
+     powertime:=0;
+     prevtime:=0;
+     voltime:=0;
+
+     // starting LED
+     clrwdt;
+     delay_ms(300);
+     LED1:=1;
+     delay_ms(300);
+     LED1:=0;
+     clrwdt;
+
+     while True do begin
+       // LED
+       wtmp := TICK_1000;
+       if wtmp - prevtime > LED1_tm then begin
+         prevtime := wtmp;
+         LED1 := not LED1;
+       end;
+
+       // save previous adc values
+       vol_prev2:=vol_prev1;
+       vol_prev1:=adc_vol;
+       // Read Sync with PWM clock
+       while TMR2IF_bit=0 do ;
+       // adc read
+       adc_cur:=ADC_Read(0);
+       adc_vol:=ADC_Read(3);
+       for i:=0 to adc_max_loop-2 do begin
+         xtmp:=ADC_Read(0);
+         wtmp:=ADC_Read(3);
+         adc_vol:=(adc_vol+wtmp) div 2;
+         if xtmp > adc_cur then
+           adc_cur:=xtmp;
+         //adc_cur:=(adc_cur+xtmp) div 2;
+       end;
+       adc_vol:=adc_vol * VOLMUL;
+
+       // check time
+       wtmp:=TICK_1000;
+       if wtmp - powertime < _UPDATE_INT then
+         goto CONTLOOP;
+       clrwdt;
+       powertime:=wtmp;
+
+       power_prev:= power_curr;
+       power_curr:= dword(adc_vol * adc_cur);
+
+       // prevent low voltage condition
+       wtmp:=TICK_1000;
+       if CCPR1L>PWM_MID then begin
+         if wtmp - voltime > _PWM_CHECK then begin
+           voltime:=wtmp;
+           adc_cur:=LM358_diff;
+         end;
+       end else
+         voltime:=wtmp;
+
+       if adc_cur>LM358_diff then begin
+         // power check
+         if power_curr = power_prev then begin
+           LED1_tm:=250;
+           goto CONTLOOP;
+         end else if power_curr < power_prev then begin
+           LED1_tm:=150;
+           flag_inc:=not flag_inc;
+         end else
+           LED1_tm:=200;
+         {
+         if (adc_vol+vol_prev2+1) div 2 < vol_prev1 then begin
+           flag_inc:=true;
+         end;
+         }
+       end else begin
+         LED1_tm:=100;
+         CCPR1L:=PWM_MIN;
+         flag_inc:=True;
+         power_curr:=0;
+         adc_cur:=0;
+         goto CONTLOOP;
+       end;
+
+       // PWM
+       if flag_inc then begin
+         if CCPR1L<PWM_MAX then
+           Inc(CCPR1L)
+           else begin
+             CCPR1L:=PWM_MAX;
+             flag_inc:=false;
+           end;
+       end else begin
+         if CCPR1L>PWM_MIN then
+           Dec(CCPR1L)
+           else begin
+             CCPR1L:=PWM_MIN;
+             flag_inc:=true;
+           end;
+       end;
+CONTLOOP:
+
+     end;
+end.
