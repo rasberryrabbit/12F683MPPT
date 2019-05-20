@@ -69,8 +69,8 @@ end;
 
 begin
      CMCON0:=7;
-     ANS3_bit:=1;        // voltage sense
-     ANS0_bit:=1;        // current sense
+     ANSEL:=$09;
+     
 
      TRISIO0_bit:=1;      // AN0
      TRISIO4_bit:=1;      // AN3
