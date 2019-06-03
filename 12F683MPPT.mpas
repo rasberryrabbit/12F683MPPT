@@ -33,7 +33,7 @@ const
    TMR1H_LOAD=$F8;           // 2ms, 65536 - 2000
 
    VOLMUL = 25 div 6;        // 25V(1024) : 6A(1024), don't exceed 8
-   _UPDATE_INT = 30 div 2;   // consider 90ms
+   _UPDATE_INT = 30 div 2;   // 30ms
    _PWM_CHECK = 4500 div 2;
 
    cLM358_diff = 0;
@@ -46,7 +46,6 @@ var
    LED1:sbit at GP5_bit;
    Write_OPAMP : sbit at GP3_bit;
    // GP2 : PWM
-   //VOLPWM : byte;
    TICK_1000 : word;
 
    LED1_tm : byte;
@@ -69,7 +68,7 @@ end;
 
 begin
      CMCON0:=7;
-     ANSEL:=$09;
+     ANSEL:=$09;         // 00001001
      
 
      TRISIO0_bit:=1;      // AN0
