@@ -67,6 +67,7 @@ begin
 end;
 
 begin
+     //OSCCON:=$70;        // 8MHz
      CMCON0:=7;
      ANSEL:=$09;         // 00001001
      
@@ -120,7 +121,7 @@ begin
        LM358_diff:=0;
 
      T1CKPS1_bit:=0;
-     T1CKPS0_bit:=1;               // timer prescaler 1:2
+     T1CKPS0_bit:=0;               // timer prescaler 1:1
      TMR1CS_bit:=0;
      TMR1L:=TMR1L_LOAD;
      TMR1H:=TMR1H_LOAD;
