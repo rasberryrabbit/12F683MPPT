@@ -33,7 +33,7 @@ const
    TMR1H_LOAD=$F8;           // 2ms, 65536 - 2000
 
    VOLMUL = 25 div 6;        // 25V(1024) : 6A(1024), don't exceed 8
-   _UPDATE_INT = 30 div 2;   // 30ms
+   _UPDATE_INT = 30 div 2;   // 50ms, 30ms
    _PWM_CHECK = 4500 div 2;
 
    cLM358_diff = 0;
@@ -190,6 +190,7 @@ begin
        power_prev:= power_curr;
        power_curr:= dword(adc_vol * adc_cur);
 
+       {
        // prevent low voltage condition
        wtmp:=TICK_1000;
        if CCPR1L>PWM_MID then begin
@@ -199,6 +200,7 @@ begin
          end;
        end else
          voltime:=wtmp;
+       }
 
        if adc_cur>LM358_diff then begin
          // power check
