@@ -7,4 +7,4 @@ It has no switching noise.
 BUK9508-55A for alternative FET.  
   
 (Note) Sometimes MPPT stalls no output. It caused by low FET bootstrap voltage.  
-It's very rare condition. It may fixed by R9 changes.  
+It's very rare condition. It may fixed by R9 change.  
