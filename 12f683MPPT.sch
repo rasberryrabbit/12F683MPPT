@@ -244,7 +244,7 @@ F 3 "" H 3050 3750 60  0000 C CNN
 	1    3050 3750
 	1    0    0    -1  
 $EndComp
-Text Label 5100 2350 2    60   ~ 0
+Text Label 6350 2350 2    60   ~ 0
 BootStrap
 Text Label 7050 3600 2    60   ~ 0
 PV-Current
@@ -407,8 +407,6 @@ Wire Wire Line
 Wire Wire Line
 	6600 2350 6600 2600
 Connection ~ 5850 2350
-Wire Wire Line
-	5300 2350 5100 2350
 Wire Wire Line
 	6250 2700 6300 2700
 Connection ~ 6300 2800
@@ -739,7 +737,6 @@ F 3 "" H 5100 2700 30  0000 C CNN
 $EndComp
 Wire Wire Line
 	5100 2350 5100 2550
-Connection ~ 5100 2350
 Wire Wire Line
 	5100 2350 4500 2350
 $Comp
@@ -957,7 +954,7 @@ Wire Wire Line
 	9450 5600 8400 5600
 Connection ~ 8400 5600
 Wire Wire Line
-	3300 2200 7250 2200
+	3300 2200 5200 2200
 Wire Wire Line
 	2250 2850 2250 3400
 Wire Wire Line
@@ -1077,4 +1074,11 @@ Wire Wire Line
 Wire Wire Line
 	7450 3150 7450 3050
 Connection ~ 7450 3050
+Wire Wire Line
+	5300 2350 5200 2350
+Wire Wire Line
+	5200 2350 5200 2200
+Connection ~ 5200 2200
+Wire Wire Line
+	5200 2200 7250 2200
 $EndSCHEMATC
