@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 1 1
 Title "Simple MPPT with 12F683"
 Date "2021-07-30"
-Rev "1.2"
+Rev "1.21"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -155,17 +155,6 @@ F 2 "Resistors_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 5280 300
 F 3 "" H 5350 3000 30  0000 C CNN
 	1    5350 3000
 	0    1    1    0   
-$EndComp
-$Comp
-L Device:D D3
-U 1 1 55C36E30
-P 5450 2350
-F 0 "D3" H 5450 2450 50  0000 C CNN
-F 1 "1N4148" H 5450 2250 50  0000 C CNN
-F 2 "Diodes_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 5450 2350 60  0001 C CNN
-F 3 "" H 5450 2350 60  0000 C CNN
-	1    5450 2350
-	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R10
@@ -954,8 +943,6 @@ Wire Wire Line
 	9450 5600 8400 5600
 Connection ~ 8400 5600
 Wire Wire Line
-	3300 2200 5200 2200
-Wire Wire Line
 	2250 2850 2250 3400
 Wire Wire Line
 	9450 4450 9150 4450
@@ -1075,10 +1062,19 @@ Wire Wire Line
 	7450 3150 7450 3050
 Connection ~ 7450 3050
 Wire Wire Line
-	5300 2350 5200 2350
+	3300 2200 7250 2200
 Wire Wire Line
-	5200 2350 5200 2200
-Connection ~ 5200 2200
-Wire Wire Line
-	5200 2200 7250 2200
+	5100 2350 5300 2350
+Connection ~ 5100 2350
+$Comp
+L Device:D_Schottky D3
+U 1 1 6104DF4D
+P 5450 2350
+F 0 "D3" H 5600 2300 50  0000 C CNN
+F 1 "1N5819" H 5450 2500 50  0000 C CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 5450 2350 50  0001 C CNN
+F 3 "~" H 5450 2350 50  0001 C CNN
+	1    5450 2350
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC
