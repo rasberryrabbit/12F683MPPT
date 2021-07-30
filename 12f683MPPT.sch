@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "Simple MPPT with 12F683"
-Date "2021-05-07"
-Rev "1.1"
+Date "2021-07-30"
+Rev "1.2"
 Comp ""
 Comment1 ""
 Comment2 ""
