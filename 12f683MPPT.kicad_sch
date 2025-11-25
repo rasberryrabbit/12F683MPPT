@@ -3426,16 +3426,15 @@
 		)
 		(uuid "62062bd8-90f3-42ac-af76-4618cfde473b")
 	)
-	(text "6A, R2 = R4 = 47k"
+	(text "11*10^-3 ohm * 6 A * 10 * 4.3 = 2.83V < 3.3"
 		(exclude_from_sim no)
-		(at 250.19 107.95 0)
+		(at 211.328 151.892 0)
 		(effects
 			(font
-				(size 1.27 1.27)
+				(size 2.032 2.032)
 			)
-			(justify left bottom)
 		)
-		(uuid "a3e2c34b-f148-41dd-8dae-d4632d01e80a")
+		(uuid "67dd3018-4e6b-4ded-b0af-e8fd2294b614")
 	)
 	(text "Heat Sink"
 		(exclude_from_sim no)
