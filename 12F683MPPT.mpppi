@@ -68,7 +68,7 @@ Count=21
 8=Output Files
 Count=2
 [LIB_EXPANDED_NODES]
-Count=0
+Count=1
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg
 [CODEGRIP_OPTIONS]

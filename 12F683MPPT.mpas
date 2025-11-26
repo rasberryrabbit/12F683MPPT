@@ -25,19 +25,20 @@ program _12F683MPPT;
 {$define Write_OPAMP_DIFF}
 
 const
-   PWM_MAX = 250;
+   PWM_MAX = 100;
    PWM_MIN = 10;
    PWM_MID = PWM_MAX div 2-5;
 
-   TMR1L_LOAD=$30;
-   TMR1H_LOAD=$F8;           // 2ms, 65536 - 2000
+   TMR1L_LOAD=$17;
+   TMR1H_LOAD=$FC;                 // 1ms, 65535 - 1000
 
-   VOLMUL = 25 div 6;        // 25V(1024) : 6A(1024), don't exceed 8
-   _UPDATE_INT = 30 div 2;   // 50ms, 30ms
-   _PWM_CHECK = 4500 div 2;
+   VOLMUL = 4;                     // 25 div 6 <- 25V(1024) : 6A(1024), don't exceed 8
+   CURDIV = 2;
+   _UPDATE_INT = 25;               // 25ms
+   _PWM_CHECK = 4500;
 
    cLM358_diff = 0;
-   adc_max_loop = 5;     // 8
+   adc_max_loop = 4;               // 8
 
 label
    CONTLOOP;
@@ -48,11 +49,11 @@ var
    // GP2 : PWM
    TICK_1000 : word;
 
-   LED1_tm : byte;
+   LED1_tm : word;
    prevtime, powertime, voltime : word;
    adc_vol, adc_cur, vol_prev1, vol_prev2 : word;
    power_prev, power_curr : dword;
-   i, LM358_diff : byte;
+   i, LM358_diff, cPWM : byte;
    flag_inc : boolean;
    wtmp, xtmp : word;
 
@@ -66,10 +67,34 @@ begin
      end;
 end;
 
+procedure SetDuty(val:Byte);
 begin
-     //OSCCON:=$70;        // 8MHz
-     CMCON0:=7;
-     ANSEL:=$09;         // 00001001
+  CCPR1L:=val shr 2;
+  DC1B1_bit:=val.1;
+  DC1B0_bit:=val.0;
+end;
+
+function GetDuty():Byte;
+begin
+  Result:=CCPR1L shl 2;
+  Result.1:=DC1B1_bit;
+  Result.0:=DC1B0_bit;
+end;
+
+function tick_diff(a, b: word):word;
+begin
+  if a<b then
+    result:=a+(65535-b)+1
+    else
+      result:=a-b;
+end;
+
+begin
+{$ifdef USE_8M}
+     OSCCON:=%01110000;  // 8MHz
+{$endif}
+     CMCON0:=7;          // disable comparator
+     ANSEL:=%00001001;   // AN0, AN3
      
 
      TRISIO0_bit:=1;      // AN0
@@ -77,14 +102,15 @@ begin
      TRISIO1_bit:=1;      // VREF
 
      TRISIO5_bit:=0;      // LED
-     VCFG_bit:=1;
-     CHS1_bit:=1;
+     VCFG_bit:=1;         // VREF
+     //CHS1_bit:=1;
      ADFM_bit:=1;
 
+     T2CON:=0;            // TMR2
      TRISIO2_bit:=1;      // PWM
-     PR2:=$65;            // 8bit
+     PR2:=PWM_MAX-1;      // 2000000 / PWM_MAX
      CCP1CON:=%00001111;  // PWM active low
-     CCPR1L:=0;
+     SetDuty(0);
      TMR2IF_bit:=0;
      TMR2ON_bit:=1;
      ClrWDT;
@@ -92,7 +118,7 @@ begin
      TRISIO2_bit:=0;      // PWM
 
      LED1:=0;
-     LED1_tm:=100;
+     LED1_tm:=200;
      TICK_1000:=0;
 
      LM358_diff:=cLM358_diff;
@@ -121,7 +147,11 @@ begin
        LM358_diff:=0;
 
      T1CKPS1_bit:=0;
+{$ifdef USE_8M}
+     T1CKPS0_bit:=1;               // timer prescaler 1:2
+{$else}
      T1CKPS0_bit:=0;               // timer prescaler 1:1
+{$endif}
      TMR1CS_bit:=0;
      TMR1L:=TMR1L_LOAD;
      TMR1H:=TMR1H_LOAD;
@@ -138,7 +168,7 @@ begin
 
      TMR1ON_bit:=1;
 
-     CCPR1L:=PWM_MIN;
+     SetDuty(PWM_MIN);
      flag_inc:=True;
      vol_prev1:=0;
 
@@ -157,7 +187,7 @@ begin
      while True do begin
        // LED
        wtmp := TICK_1000;
-       if wtmp - prevtime > LED1_tm then begin
+       if tick_diff(wtmp, prevtime) > LED1_tm then begin
          prevtime := wtmp;
          LED1 := not LED1;
        end;
@@ -170,20 +200,23 @@ begin
        // adc read
        adc_cur:=ADC_Read(0);
        adc_vol:=ADC_Read(3);
-       for i:=0 to adc_max_loop-2 do begin
+       for i:=1 to adc_max_loop-1 do begin
          xtmp:=ADC_Read(0);
          wtmp:=ADC_Read(3);
-         adc_vol:=(adc_vol+wtmp) div 2;
-         if xtmp > adc_cur then
-           adc_cur:=xtmp;
+         //adc_vol:=(adc_vol+wtmp) div 2;
          //adc_cur:=(adc_cur+xtmp) div 2;
+         if xtmp < adc_cur then begin
+           adc_cur:=xtmp;
+           adc_vol:=wtmp;
+         end;
        end;
        adc_vol:=adc_vol * VOLMUL;
 
        // check time
        wtmp:=TICK_1000;
-       if wtmp - powertime < _UPDATE_INT then
-         goto CONTLOOP;
+       if tick_diff(wtmp,powertime) < _UPDATE_INT then
+         //goto CONTLOOP;
+         continue;
        clrwdt;
        powertime:=wtmp;
 
@@ -205,13 +238,13 @@ begin
        if adc_cur>LM358_diff then begin
          // power check
          if power_curr = power_prev then begin
-           LED1_tm:=250;
-           goto CONTLOOP;
+           LED1_tm:=500;
+           continue;
          end else if power_curr < power_prev then begin
-           LED1_tm:=150;
+           LED1_tm:=300;
            flag_inc:=not flag_inc;
          end else begin
-           LED1_tm:=150;
+           LED1_tm:=300;
          end;
          {
          if (adc_vol+vol_prev2+1) div 2 < vol_prev1 then begin
@@ -219,29 +252,32 @@ begin
          end;
          }
        end else begin
-         LED1_tm:=100;
-         CCPR1L:=PWM_MIN;
+         LED1_tm:=200;
+         SetDuty(PWM_MIN);
          flag_inc:=True;
          power_curr:=0;
          adc_cur:=0;
-         goto CONTLOOP;
+         continue;
        end;
 
        // PWM
+       cPWM:=GetDuty();
        if flag_inc then begin
-         if CCPR1L<PWM_MAX then
-           Inc(CCPR1L)
-           else begin
-             CCPR1L:=PWM_MAX;
-             flag_inc:=false;
-           end;
+         if cPWM<PWM_MAX then begin
+           Inc(cPWM);
+           SetDuty(cPWM);
+         end else begin
+           SetDuty(PWM_MAX);
+           flag_inc:=false;
+         end;
        end else begin
-         if CCPR1L>PWM_MIN then
-           Dec(CCPR1L)
-           else begin
-             CCPR1L:=PWM_MIN;
-             flag_inc:=true;
-           end;
+         if cPWM>PWM_MIN then begin
+           Dec(cPWM);
+           SetDuty(cPWM);
+         end else begin
+           SetDuty(PWM_MIN);
+           flag_inc:=true;
+         end;
        end;
 CONTLOOP:
 
