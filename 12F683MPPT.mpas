@@ -25,7 +25,7 @@ program _12F683MPPT;
 {$define Write_OPAMP_DIFF}
 
 const
-   PWM_MAX = 100;
+   PWM_MAX = 200;
    PWM_MIN = 10;
    PWM_MID = PWM_MAX div 2-5;
 
@@ -33,7 +33,7 @@ const
    TMR1H_LOAD=$FC;                 // 1ms, 65535 - 1000
 
    VOLMUL = 4;                     // 25 div 6 <- 25V(1024) : 6A(1024), don't exceed 8
-   CURDIV = 2;
+   //CURDIV = 2;
    _UPDATE_INT = 25;               // 25ms
    _PWM_CHECK = 4500;
 
@@ -50,7 +50,7 @@ var
    TICK_1000 : word;
 
    LED1_tm : word;
-   prevtime, powertime, voltime : word;
+   prevtime, powertime, voltime, watchdog : word;
    adc_vol, adc_cur, vol_prev1, vol_prev2 : word;
    power_prev, power_curr : dword;
    i, LM358_diff, cPWM : byte;
@@ -67,18 +67,16 @@ begin
      end;
 end;
 
-procedure SetDuty(val:Byte);
+procedure SetPWM(val:Byte);
 begin
-  CCPR1L:=val shr 2;
-  DC1B1_bit:=val.1;
-  DC1B0_bit:=val.0;
+  CCPR1L:=val shr 1;
+  DC1B1_bit:=val.0;
 end;
 
-function GetDuty():Byte;
+function GetPWM():Byte;
 begin
-  Result:=CCPR1L shl 2;
-  Result.1:=DC1B1_bit;
-  Result.0:=DC1B0_bit;
+  Result:=CCPR1L shl 1;
+  Result.0:=DC1B1_bit;
 end;
 
 function tick_diff(a, b: word):word;
@@ -106,11 +104,12 @@ begin
      //CHS1_bit:=1;
      ADFM_bit:=1;
 
-     T2CON:=0;            // TMR2
-     TRISIO2_bit:=1;      // PWM
-     PR2:=PWM_MAX-1;      // 2000000 / PWM_MAX
-     CCP1CON:=%00001111;  // PWM active low
-     SetDuty(0);
+     T2CON:=0;               // TMR2
+     TRISIO2_bit:=1;
+     PR2:=(PWM_MAX shr 1)-1; // PR2 * 2 = {CCPR1L, DC1B1}, ignore DC1B0
+     DC1B0_bit:=0;
+     CCP1CON:=%00001111;     // PWM active low
+     SetPWM(0);
      TMR2IF_bit:=0;
      TMR2ON_bit:=1;
      ClrWDT;
@@ -168,7 +167,7 @@ begin
 
      TMR1ON_bit:=1;
 
-     SetDuty(PWM_MIN);
+     SetPWM(PWM_MIN);
      flag_inc:=True;
      vol_prev1:=0;
 
@@ -177,12 +176,12 @@ begin
      voltime:=0;
 
      // starting LED
-     clrwdt;
      delay_ms(300);
      LED1:=1;
      delay_ms(300);
      LED1:=0;
      clrwdt;
+     watchdog:=0;
 
      while True do begin
        // LED
@@ -212,12 +211,17 @@ begin
        end;
        adc_vol:=adc_vol * VOLMUL;
 
-       // check time
+       // clear watchdog
+       wtmp:=TICK_1000;
+       if tick_diff(wtmp,watchdog) > 1000 then begin
+         watchdog:=wtmp;
+         clrwdt;
+       end;
+
+       // check power
        wtmp:=TICK_1000;
        if tick_diff(wtmp,powertime) < _UPDATE_INT then
-         //goto CONTLOOP;
          continue;
-       clrwdt;
        powertime:=wtmp;
 
        power_prev:= power_curr;
@@ -234,7 +238,7 @@ begin
        end else
          voltime:=wtmp;
        }
-
+       // led indicating and check low current
        if adc_cur>LM358_diff then begin
          // power check
          if power_curr = power_prev then begin
@@ -253,29 +257,29 @@ begin
          }
        end else begin
          LED1_tm:=200;
-         SetDuty(PWM_MIN);
+         SetPWM(PWM_MIN);
          flag_inc:=True;
          power_curr:=0;
          adc_cur:=0;
          continue;
        end;
 
-       // PWM
-       cPWM:=GetDuty();
+       // set PWM value
+       cPWM:=GetPWM();
        if flag_inc then begin
          if cPWM<PWM_MAX then begin
            Inc(cPWM);
-           SetDuty(cPWM);
+           SetPWM(cPWM);
          end else begin
-           SetDuty(PWM_MAX);
+           SetPWM(PWM_MAX);
            flag_inc:=false;
          end;
        end else begin
          if cPWM>PWM_MIN then begin
            Dec(cPWM);
-           SetDuty(cPWM);
+           SetPWM(cPWM);
          end else begin
-           SetDuty(PWM_MIN);
+           SetPWM(PWM_MIN);
            flag_inc:=true;
          end;
        end;
