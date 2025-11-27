@@ -27,6 +27,7 @@ program _12F683MPPT;
 const
    PWM_MAX = 200;
    PWM_MIN = 10;
+   PWM_START = PWM_MAX * 30 div 100;
    PWM_MID = PWM_MAX div 2-5;
 
    TMR1L_LOAD=$17;
@@ -167,7 +168,7 @@ begin
 
      TMR1ON_bit:=1;
 
-     SetPWM(PWM_MIN);
+     SetPWM(PWM_START);
      flag_inc:=True;
      vol_prev1:=0;
 
@@ -257,7 +258,7 @@ begin
          }
        end else begin
          LED1_tm:=200;
-         SetPWM(PWM_MIN);
+         SetPWM(PWM_START);
          flag_inc:=True;
          power_curr:=0;
          adc_cur:=0;
