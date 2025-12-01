@@ -54,7 +54,7 @@ var
    prevtime, powertime, voltime, watchdog : word;
    adc_vol, adc_cur, vol_prev1, vol_prev2 : word;
    power_prev, power_curr : dword;
-   i, LM358_diff, cPWM, LowCurCnt : byte;
+   i, LM358_diff, cPWM : byte;
    flag_inc : boolean;
    wtmp, xtmp : word;
 
@@ -183,7 +183,6 @@ begin
      LED1:=0;
      clrwdt;
      watchdog:=0;
-     LowCurCnt:=0;
 
      while True do begin
        // LED
@@ -242,7 +241,6 @@ begin
        }
        // led indicating and check low current
        if adc_cur>LM358_diff then begin
-         LowCurCnt:=0;
          // power check
          if power_curr = power_prev then begin
            LED1_tm:=500;
@@ -260,10 +258,7 @@ begin
          }
        end else begin
          LED1_tm:=200;
-         if LowCurCnt<10 then
-           SetPWM(PWM_START)
-           else
-             SetPWM(PWM_MIN);
+         SetPWM(PWM_START);
          flag_inc:=True;
          power_curr:=0;
          adc_cur:=0;
