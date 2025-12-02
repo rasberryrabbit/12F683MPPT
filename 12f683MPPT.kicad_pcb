@@ -94,7 +94,7 @@
 	(net 17 "Net-(Q4-B)")
 	(net 18 "Net-(U3B--)")
 	(net 19 "Net-(U3A-+)")
-	(net 20 "Net-(R12-Pad1)")
+	(net 20 "Net-(D10-K)")
 	(net 21 "Net-(U3A--)")
 	(net 22 "Net-(U3B-+)")
 	(net 23 "/PV-Voltage")
@@ -9968,7 +9968,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 20 "Net-(R12-Pad1)")
+			(net 20 "Net-(D10-K)")
 			(pintype "passive")
 			(uuid "8750db5f-58b6-486c-820f-3f1c465f2481")
 		)
@@ -10306,7 +10306,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 20 "Net-(R12-Pad1)")
+			(net 20 "Net-(D10-K)")
 			(pintype "passive")
 			(uuid "f216c086-45d6-495e-b371-756874263b92")
 		)
@@ -11294,7 +11294,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 20 "Net-(R12-Pad1)")
+			(net 20 "Net-(D10-K)")
 			(pintype "passive")
 			(uuid "c6c0cfae-6a76-4c1b-b0e1-d023916816e5")
 		)
@@ -20161,6 +20161,294 @@
 			)
 		)
 	)
+	(footprint "Diode_THT:D_DO-41_SOD81_P7.62mm_Horizontal"
+		(layer "F.Cu")
+		(uuid "ad434ec4-fbab-4e66-9361-48ec1f1c02fd")
+		(at 51.2 66.59 -90)
+		(descr "Diode, DO-41_SOD81 series, Axial, Horizontal, pin pitch=7.62mm, length*diameter=5.2*2.7mm^2, https://www.diodes.com/assets/Package-Files/DO-41-Plastic.pdf")
+		(tags "Diode DO-41_SOD81 series Axial Horizontal pin pitch 7.62mm  length 5.2mm diameter 2.7mm")
+		(property "Reference" "D10"
+			(at 3.81 -2.47 90)
+			(layer "F.SilkS")
+			(uuid "1fbb8266-564b-4f05-a388-4d79d89abf71")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "1N5227B"
+			(at 3.81 2.47 90)
+			(layer "F.Fab")
+			(uuid "95475850-79ec-4aa3-b850-d74791917184")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 90)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "93f20191-a19f-4450-a17c-43cecde904b0")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Description" "Zener diode"
+			(at 0 0 90)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "fa6345a7-9c15-414e-80b4-ef5dfa4dc7f6")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
+		(path "/74a8fbe9-9e9a-4343-bcc0-73e5955ec9f7")
+		(sheetname "/")
+		(sheetfile "12f683MPPT.kicad_sch")
+		(attr through_hole)
+		(fp_line
+			(start 1.09 1.47)
+			(end 6.53 1.47)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "0c143038-99cc-459d-8351-35e5716dab5d")
+		)
+		(fp_line
+			(start 6.53 1.47)
+			(end 6.53 1.34)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "6fbd77bf-34a4-40ba-a213-5fd5b2976407")
+		)
+		(fp_line
+			(start 1.09 1.34)
+			(end 1.09 1.47)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "7dfa4553-2dad-4af7-a0ff-2d79ae30f1cc")
+		)
+		(fp_line
+			(start 1.09 -1.34)
+			(end 1.09 -1.47)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "f1c85e79-aadc-455c-92fe-b8bf7144a74c")
+		)
+		(fp_line
+			(start 1.09 -1.47)
+			(end 6.53 -1.47)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "db9598b5-873b-42a2-abda-111b0fcd1d8b")
+		)
+		(fp_line
+			(start 1.87 -1.47)
+			(end 1.87 1.47)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "dfa37bb8-097a-4091-9204-2b63c7941e70")
+		)
+		(fp_line
+			(start 1.99 -1.47)
+			(end 1.99 1.47)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "a4820578-6dd6-4507-bdf7-36c587884f6f")
+		)
+		(fp_line
+			(start 2.11 -1.47)
+			(end 2.11 1.47)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "90fcb938-f378-4e80-a8b2-a3cc7c18b3ac")
+		)
+		(fp_line
+			(start 6.53 -1.47)
+			(end 6.53 -1.34)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "b373e248-168b-4c54-94f4-0803ac3838ec")
+		)
+		(fp_rect
+			(start -1.35 -1.6)
+			(end 8.97 1.6)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.CrtYd")
+			(uuid "13111e45-d1bf-4154-b10b-ac9493eed38e")
+		)
+		(fp_line
+			(start 0 0)
+			(end 1.21 0)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "8c88a937-9b20-4332-8afe-6b08a4cc3690")
+		)
+		(fp_line
+			(start 7.62 0)
+			(end 6.41 0)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "5e3387a4-b8c3-4ffd-b3d2-15ec08e43d7f")
+		)
+		(fp_line
+			(start 1.89 -1.35)
+			(end 1.89 1.35)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "e2a50fbf-914d-4f70-a4ee-eb99ee5af053")
+		)
+		(fp_line
+			(start 1.99 -1.35)
+			(end 1.99 1.35)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "df764e22-b5b5-4663-93a2-06b57441f94a")
+		)
+		(fp_line
+			(start 2.09 -1.35)
+			(end 2.09 1.35)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "42676f87-5bf5-4a36-9121-566f544b366f")
+		)
+		(fp_rect
+			(start 1.21 -1.35)
+			(end 6.41 1.35)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "98f90c73-c1f7-470e-b3d9-1cfeef8796bd")
+		)
+		(fp_text user "K"
+			(at 0 -2.1 90)
+			(layer "F.SilkS")
+			(uuid "f0e6d563-62ec-4efa-9feb-26220f2cc40b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "K"
+			(at 0 -2.1 90)
+			(layer "F.Fab")
+			(uuid "5bec5bdc-3d8e-4fc4-b3eb-f7d05a4aa5a6")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "${REFERENCE}"
+			(at 4.2 0 90)
+			(layer "F.Fab")
+			(uuid "f351d2dd-1192-4159-b42f-820d6722bdf2")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" thru_hole roundrect
+			(at 0 0 270)
+			(size 2.2 2.2)
+			(drill 1.1)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(roundrect_rratio 0.113636)
+			(net 20 "Net-(D10-K)")
+			(pinfunction "K")
+			(pintype "passive")
+			(uuid "376bba0a-de39-4c09-b645-ee49d541ea27")
+		)
+		(pad "2" thru_hole circle
+			(at 7.62 0 270)
+			(size 2.2 2.2)
+			(drill 1.1)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net 4 "GNDPWR")
+			(pinfunction "A")
+			(pintype "passive")
+			(uuid "e9e7f7d9-008f-4731-8d22-a07a5c58996d")
+		)
+		(embedded_fonts no)
+		(model "${KICAD9_3DMODEL_DIR}/Diode_THT.3dshapes/D_DO-41_SOD81_P7.62mm_Horizontal.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
 	(footprint "Connector_Pin:Pin_D1.0mm_L10.0mm"
 		(layer "F.Cu")
 		(uuid "c8be5265-e936-44d8-81bd-7fac1fbe214d")
@@ -20992,6 +21280,14 @@
 		(uuid "6a5eafc5-58ac-44e8-a732-b3e13d878373")
 	)
 	(segment
+		(start 51.2 74.21)
+		(end 47.04 74.21)
+		(width 2)
+		(layer "B.Cu")
+		(net 4)
+		(uuid "6db27b19-759e-4e06-9b06-f2a5acc95b32")
+	)
+	(segment
 		(start 46.05 74.25)
 		(end 41.34 69.54)
 		(width 2)
@@ -21182,6 +21478,14 @@
 		(layer "B.Cu")
 		(net 4)
 		(uuid "bd278ab6-7c15-4f4a-81b7-85c1c1a9b456")
+	)
+	(segment
+		(start 47.04 74.21)
+		(end 47 74.25)
+		(width 2)
+		(layer "B.Cu")
+		(net 4)
+		(uuid "cc4da626-8f87-4ff1-af80-9cafb6114581")
 	)
 	(segment
 		(start 43.93 82.68)
@@ -22334,6 +22638,22 @@
 		(layer "F.Cu")
 		(net 19)
 		(uuid "dc52e286-576b-43cf-a719-3d4e3e8a34ba")
+	)
+	(segment
+		(start 51.2 65.75)
+		(end 47 61.55)
+		(width 2)
+		(layer "B.Cu")
+		(net 20)
+		(uuid "30447de5-7b3f-4602-9eb0-cb17c9d4814e")
+	)
+	(segment
+		(start 51.2 66.59)
+		(end 51.2 65.75)
+		(width 2)
+		(layer "B.Cu")
+		(net 20)
+		(uuid "516fae32-4b98-406d-bde4-c9d9b2152bd7")
 	)
 	(segment
 		(start 54.9 61.55)

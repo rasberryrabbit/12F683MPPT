@@ -3640,6 +3640,12 @@
 		(uuid "2572c36c-dfa8-408e-aae3-870af383fbf6")
 	)
 	(junction
+		(at 50.8 111.76)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2ab09ce4-6d5f-4674-9c9e-4df2f3a524a7")
+	)
+	(junction
 		(at 66.04 78.74)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3722,6 +3728,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6957edb7-678b-4985-874d-f94f2dfe3093")
+	)
+	(junction
+		(at 50.8 142.24)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7363d9c7-1e97-496a-8549-ad72f7426920")
 	)
 	(junction
 		(at 67.31 124.46)
@@ -5267,6 +5279,16 @@
 	)
 	(wire
 		(pts
+			(xy 50.8 111.76) (xy 50.8 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ba842317-0ae7-4079-a9b5-422449b93d61")
+	)
+	(wire
+		(pts
 			(xy 54.61 104.14) (xy 54.61 78.74)
 		)
 		(stroke
@@ -5384,6 +5406,16 @@
 			(type default)
 		)
 		(uuid "cb127cba-b7d6-485c-b8d6-9f2775cf28d4")
+	)
+	(wire
+		(pts
+			(xy 50.8 142.24) (xy 46.99 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cc98ddba-adeb-4e43-b0c2-6ff178335239")
 	)
 	(wire
 		(pts
@@ -5507,7 +5539,7 @@
 	)
 	(wire
 		(pts
-			(xy 67.31 142.24) (xy 46.99 142.24)
+			(xy 67.31 142.24) (xy 50.8 142.24)
 		)
 		(stroke
 			(width 0)
@@ -5734,6 +5766,16 @@
 			(type default)
 		)
 		(uuid "edd66300-e6d6-4276-8558-31f805914fee")
+	)
+	(wire
+		(pts
+			(xy 50.8 128.27) (xy 50.8 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eeae1b10-f913-4e38-8417-ceaf8bf66173")
 	)
 	(wire
 		(pts
@@ -9832,6 +9874,76 @@
 			(project "12f683MPPT"
 				(path "/c54864ce-ba59-4422-a8c7-824cf583dfc9"
 					(reference "J6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:D_Zener")
+		(at 50.8 124.46 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "74a8fbe9-9e9a-4343-bcc0-73e5955ec9f7")
+		(property "Reference" "D10"
+			(at 53.34 123.1899 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1N5227B"
+			(at 53.34 125.7299 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_THT:D_DO-41_SOD81_P7.62mm_Horizontal"
+			(at 50.8 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 50.8 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Zener diode"
+			(at 50.8 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "ff5a9057-aa3d-44a8-98d2-4fc485300ca0")
+		)
+		(pin "1"
+			(uuid "d3c8c85c-4c70-456d-9036-be9421cd8452")
+		)
+		(instances
+			(project ""
+				(path "/c54864ce-ba59-4422-a8c7-824cf583dfc9"
+					(reference "D10")
 					(unit 1)
 				)
 			)
