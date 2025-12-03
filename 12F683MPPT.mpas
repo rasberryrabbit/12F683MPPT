@@ -228,17 +228,6 @@ begin
        power_prev:= power_curr;
        power_curr:= dword(adc_vol * adc_cur);
 
-       {
-       // prevent low voltage condition
-       wtmp:=TICK_1000;
-       if CCPR1L>PWM_MID then begin
-         if wtmp - voltime > _PWM_CHECK then begin
-           voltime:=wtmp;
-           adc_cur:=LM358_diff;
-         end;
-       end else
-         voltime:=wtmp;
-       }
        // led indicating and check low current
        if adc_cur>LM358_diff then begin
          // power check
@@ -251,11 +240,7 @@ begin
          end else begin
            LED1_tm:=300;
          end;
-         {
-         if (adc_vol+vol_prev2+1) div 2 < vol_prev1 then begin
-           flag_inc:=true;
-         end;
-         }
+
        end else begin
          LED1_tm:=200;
          SetPWM(PWM_START);
