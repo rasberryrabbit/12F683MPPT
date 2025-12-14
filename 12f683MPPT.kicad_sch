@@ -3558,6 +3558,16 @@
 		)
 		(uuid "67dd3018-4e6b-4ded-b0af-e8fd2294b614")
 	)
+	(text "D3 alternative = 1N4148"
+		(exclude_from_sim no)
+		(at 138.684 53.594 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "70bbfe76-f7ef-4600-a262-d0d662b0921f")
+	)
 	(text "Optional"
 		(exclude_from_sim no)
 		(at 61.214 60.706 0)
