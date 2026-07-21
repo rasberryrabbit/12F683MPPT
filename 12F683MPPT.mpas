@@ -110,12 +110,12 @@ begin
      PR2:=(PWM_MAX shr 1)-1; // PR2 * 2 = {CCPR1L, DC1B1}, ignore DC1B0
      DC1B0_bit:=0;
      CCP1CON:=%00001111;     // PWM active low
-     SetPWM(0);
+     SetPWM(PWM_START);
+     TRISIO2_bit:=0;         // PWM Output
      TMR2IF_bit:=0;
      TMR2ON_bit:=1;
      ClrWDT;
-     while TMR2IF_bit=0 do ;
-     TRISIO2_bit:=0;      // PWM
+     //while TMR2IF_bit=0 do ;
 
      LED1:=0;
      LED1_tm:=200;
@@ -196,7 +196,7 @@ begin
        vol_prev2:=vol_prev1;
        vol_prev1:=adc_vol;
        // Read Sync with PWM clock
-       while TMR2IF_bit=0 do ;
+       //while TMR2IF_bit=0 do ;
        // adc read
        adc_cur:=ADC_Read(0);
        adc_vol:=ADC_Read(3);
