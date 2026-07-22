@@ -35,11 +35,12 @@ const
 
    VOLMUL = 4;                     // 25 div 6 <- 25V(1024) : 6A(1024), don't exceed 8
    //CURDIV = 2;
-   _UPDATE_INT = 20;               // 18~25ms
+   _UPDATE_INT = 18;               // 18~25ms
    _PWM_CHECK = 4500;
 
    cLM358_diff = 0;
    adc_max_loop = 4;               // 8
+   curr_yield = 3;
 
 label
    CONTLOOP;
@@ -52,7 +53,7 @@ var
 
    LED1_tm : word;
    prevtime, powertime, voltime, watchdog : word;
-   adc_vol, adc_cur, vol_prev1, vol_prev2 : word;
+   adc_vol, adc_cur, vol_prev1, vol_prev2, adc_cur_last : word;
    power_prev, power_curr : dword;
    i, LM358_diff, cPWM : byte;
    flag_inc : boolean;
@@ -183,6 +184,7 @@ begin
      LED1:=0;
      clrwdt;
      watchdog:=0;
+     adc_cur_last:=0;
 
      while True do begin
        // LED
@@ -195,6 +197,7 @@ begin
        // save previous adc values
        vol_prev2:=vol_prev1;
        vol_prev1:=adc_vol;
+       adc_cur_last:=adc_cur;
        // Read Sync with PWM clock
        //while TMR2IF_bit=0 do ;
        // adc read
@@ -230,17 +233,20 @@ begin
 
        // led indicating and check low current
        if adc_cur>LM358_diff then begin
-         // power check
+         // checking power
          if power_curr = power_prev then begin
            LED1_tm:=500;
            continue;
          end else if power_curr < power_prev then begin
            LED1_tm:=300;
-           flag_inc:=not flag_inc;
+           // avoid low current
+           if adc_cur<adc_cur_last then
+             flag_inc:=True
+           else
+             flag_inc:=not flag_inc;
          end else begin
            LED1_tm:=300;
          end;
-
        end else begin
          LED1_tm:=200;
          SetPWM(PWM_START);
