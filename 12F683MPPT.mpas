@@ -52,8 +52,8 @@ var
    TICK_1000 : word;
 
    LED1_tm : word;
-   prevtime, powertime, voltime, watchdog : word;
-   adc_vol, adc_cur, vol_prev1, vol_prev2, adc_cur_last : word;
+   prevtime, powertime, watchdog : word;
+   adc_vol, adc_cur, adc_cur_last : word;
    power_prev, power_curr : dword;
    i, LM358_diff, cPWM : byte;
    flag_inc : boolean;
@@ -171,11 +171,9 @@ begin
 
      SetPWM(PWM_START);
      flag_inc:=True;
-     vol_prev1:=0;
 
      powertime:=0;
      prevtime:=0;
-     voltime:=0;
 
      // starting LED
      delay_ms(300);
@@ -195,8 +193,6 @@ begin
        end;
 
        // save previous adc values
-       vol_prev2:=vol_prev1;
-       vol_prev1:=adc_vol;
        adc_cur_last:=adc_cur;
        // Read Sync with PWM clock
        //while TMR2IF_bit=0 do ;
