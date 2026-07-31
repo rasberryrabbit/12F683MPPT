@@ -73,6 +73,7 @@ procedure SetPWM(val:Byte);
 begin
   CCPR1L:=val shr 1;
   DC1B1_bit:=val.0;
+  DC1B0_bit:=0;
 end;
 
 function GetPWM():Byte;
@@ -108,8 +109,7 @@ begin
 
      T2CON:=0;               // TMR2
      TRISIO2_bit:=1;
-     PR2:=(PWM_MAX shr 1)-1; // PR2 * 2 = {CCPR1L, DC1B1}, ignore DC1B0
-     DC1B0_bit:=0;
+     PR2:=(PWM_MAX shr 1)-1; // (PR2 + 1) * 2 -> {CCPR1L: DC1B1, Ignore DC1B0}
      CCP1CON:=%00001111;     // PWM active low
      SetPWM(PWM_START);
      TRISIO2_bit:=0;         // PWM Output
