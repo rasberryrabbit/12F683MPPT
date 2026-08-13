@@ -43,6 +43,9 @@ const
    adc_max_loop = 4;               // 8
    curr_yield = 3;
 
+   cur_port = 0;
+   vol_port = 3;
+
 label
    CONTLOOP;
 
@@ -58,7 +61,7 @@ var
    power_prev, power_curr : dword;
    i, LM358_diff, cPWM, power_low : byte;
    flag_inc : boolean;
-   wtmp, xtmp : word;
+   vtmp, ctmp : word;
 
 procedure Interrupt(); iv 0x0004; ics ICS_AUTO;
 begin
@@ -132,7 +135,7 @@ begin
      if Write_OPAMP=0 then begin
        Delay_100ms;
        Delay_100ms;
-       adc_cur:=ADC_Read(0);
+       adc_cur:=ADC_Read(cur_port);
        EEPROM_Write(0, Lo(adc_cur));
        Delay_100ms;
        LED1:=1;
@@ -144,7 +147,7 @@ begin
 
      {$ifdef USE_EEPROM_LM358DIFF}
      Delay_100ms;
-     LM358_diff:=EEPROM_Read(0);
+     LM358_diff:=EEPROM_Read(cur_port);
      {$endif}
      if LM358_diff>$1f then
        LM358_diff:=0;
@@ -188,9 +191,9 @@ begin
 
      while True do begin
        // LED
-       wtmp := TICK_1000;
-       if tick_diff(wtmp, prevtime) > LED1_tm then begin
-         prevtime := wtmp;
+       vtmp := TICK_1000;
+       if tick_diff(vtmp, prevtime) > LED1_tm then begin
+         prevtime := vtmp;
          LED1 := not LED1;
        end;
 
@@ -199,32 +202,32 @@ begin
        // Read Sync with PWM clock
        //while TMR2IF_bit=0 do ;
        // adc read
-       adc_cur:=ADC_Read(0);
-       adc_vol:=ADC_Read(3);
+       adc_cur:=ADC_Read(cur_port);
+       adc_vol:=ADC_Read(vol_port);
        for i:=1 to adc_max_loop-1 do begin
-         xtmp:=ADC_Read(0);
-         wtmp:=ADC_Read(3);
-         //adc_vol:=(adc_vol+wtmp) div 2;
-         //adc_cur:=(adc_cur+xtmp) div 2;
-         if xtmp < adc_cur then begin
-           adc_cur:=xtmp;
-           adc_vol:=wtmp;
-         end;
+         ctmp:=ADC_Read(cur_port);
+         vtmp:=ADC_Read(vol_port);
+         adc_vol:=(adc_vol+vtmp) div 2;
+         adc_cur:=(adc_cur+ctmp) div 2;
+         //if xtmp < adc_cur then begin
+         //  adc_cur:=xtmp;
+         //  adc_vol:=wtmp;
+         //end;
        end;
        adc_vol:=adc_vol * VOLMUL;
 
        // clear watchdog
-       wtmp:=TICK_1000;
-       if tick_diff(wtmp,watchdog) >= 1000 then begin
-         watchdog:=wtmp;
+       vtmp:=TICK_1000;
+       if tick_diff(vtmp,watchdog) >= 1000 then begin
+         watchdog:=vtmp;
          clrwdt;
        end;
 
        // check power
-       wtmp:=TICK_1000;
-       if tick_diff(wtmp,powertime) < _UPDATE_INT then
+       vtmp:=TICK_1000;
+       if tick_diff(vtmp,powertime) < _UPDATE_INT then
          continue;
-       powertime:=wtmp;
+       powertime:=vtmp;
 
        power_prev:= power_curr;
        power_curr:= dword(adc_vol * adc_cur);
