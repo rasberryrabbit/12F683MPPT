@@ -23,6 +23,7 @@ program _12F683MPPT;
 
 {$define USE_EEPROM_LM358DIFF}
 {$define Write_OPAMP_DIFF}
+{$define ADC_AVG}
 
 const
    PWM_MAX = 200;
@@ -207,12 +208,15 @@ begin
        for i:=1 to adc_max_loop-1 do begin
          ctmp:=ADC_Read(cur_port);
          vtmp:=ADC_Read(vol_port);
+{$ifdef ADC_AVG}
          adc_vol:=(adc_vol+vtmp) div 2;
          adc_cur:=(adc_cur+ctmp) div 2;
-         //if xtmp < adc_cur then begin
-         //  adc_cur:=xtmp;
-         //  adc_vol:=wtmp;
-         //end;
+{$else}
+         if ctmp < adc_cur then begin
+           adc_cur:=ctmp;
+           adc_vol:=vtmp;
+         end;
+{$endif}
        end;
        adc_vol:=adc_vol * VOLMUL;
 
