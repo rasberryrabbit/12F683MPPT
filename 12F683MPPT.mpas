@@ -27,7 +27,7 @@ program _12F683MPPT;
 
 const
    PWM_MAX = 200;
-   PWM_MIN = 10;
+   PWM_MIN = PWM_MAX * 10 div 100;
    PWM_START = PWM_MAX * 30 div 100;
    PWM_MID = PWM_MAX div 2-5;
 
