@@ -3800,6 +3800,12 @@
 		(uuid "94ec9118-abbe-47e0-9284-216b2c6220c9")
 	)
 	(junction
+		(at 154.94 91.44)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9b4d3eef-7474-4870-a8c7-b7201f32128d")
+	)
+	(junction
 		(at 54.61 55.88)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3852,6 +3858,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "be819cd0-c927-4ef0-9d92-74b932ca269b")
+	)
+	(junction
+		(at 154.94 142.24)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bf8dfa47-6d5a-4af1-9fe3-fa6be9662a65")
 	)
 	(junction
 		(at 224.79 91.44)
@@ -4034,6 +4046,16 @@
 			(type default)
 		)
 		(uuid "1324fdc5-830b-49b7-a70d-eeff54cbaa4d")
+	)
+	(wire
+		(pts
+			(xy 154.94 91.44) (xy 224.79 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "14f9186e-7233-4cba-a440-4e059a3efc76")
 	)
 	(wire
 		(pts
@@ -4547,7 +4569,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 91.44) (xy 224.79 91.44)
+			(xy 154.94 91.44) (xy 140.97 91.44)
 		)
 		(stroke
 			(width 0)
@@ -4837,6 +4859,16 @@
 	)
 	(wire
 		(pts
+			(xy 154.94 128.27) (xy 154.94 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7c54b499-2a71-449f-b6b4-0c0df0fd4999")
+	)
+	(wire
+		(pts
 			(xy 224.79 146.05) (xy 224.79 134.62)
 		)
 		(stroke
@@ -4917,13 +4949,23 @@
 	)
 	(wire
 		(pts
-			(xy 148.59 142.24) (xy 170.18 142.24)
+			(xy 154.94 142.24) (xy 148.59 142.24)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "9473c08c-bc55-4df5-aa19-e79e30fd528f")
+	)
+	(wire
+		(pts
+			(xy 170.18 142.24) (xy 154.94 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "95067b72-fe98-4637-89cf-e3fb517901bc")
 	)
 	(wire
 		(pts
@@ -5004,6 +5046,16 @@
 			(type default)
 		)
 		(uuid "9821f819-87f4-4eb9-bf85-ec195faec341")
+	)
+	(wire
+		(pts
+			(xy 154.94 120.65) (xy 154.94 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9b0b8a4f-142d-4986-a26f-e2e0eda3aed1")
 	)
 	(wire
 		(pts
@@ -7518,6 +7570,73 @@
 			(project ""
 				(path "/c54864ce-ba59-4422-a8c7-824cf583dfc9"
 					(reference "R14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:CP")
+		(at 154.94 124.46 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "00000000-0000-0000-0000-000055cddbd9")
+		(property "Reference" "C5"
+			(at 155.575 121.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10u"
+			(at 155.575 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D8.0mm_P2.50mm"
+			(at 155.9052 128.27 0)
+			(effects
+				(font
+					(size 0.762 0.762)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 154.94 124.46 0)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 154.94 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3abd3d77-f08a-4aa7-b481-67ba74464f8b")
+		)
+		(pin "2"
+			(uuid "96eeeadb-f03b-4b22-a830-3cd9a9df48a3")
+		)
+		(instances
+			(project ""
+				(path "/c54864ce-ba59-4422-a8c7-824cf583dfc9"
+					(reference "C5")
 					(unit 1)
 				)
 			)
