@@ -23,6 +23,7 @@ program _12F683MPPT;
 
 {$define USE_EEPROM_LM358DIFF}
 {$define Write_OPAMP_DIFF}
+{ $define ADC_LOOP}
 {$define ADC_AVG}
 
 const
@@ -200,11 +201,13 @@ begin
 
        // save previous adc values
        adc_cur_last:=adc_cur;
-       // Read Sync with PWM clock
-       //while TMR2IF_bit=0 do ;
+       // Avoid ringing at falling edge
+       while TMR2IF_bit=0 do ;
+       Delay_80us;                     // 10kHz, 100us, 100-20=80us
        // adc read
        adc_cur:=ADC_Read(cur_port);
        adc_vol:=ADC_Read(vol_port);
+{$ifdef ADC_LOOP}
        for i:=1 to adc_max_loop-1 do begin
          ctmp:=ADC_Read(cur_port);
          vtmp:=ADC_Read(vol_port);
@@ -218,6 +221,7 @@ begin
          end;
 {$endif}
        end;
+{$endif}
        adc_vol:=adc_vol * VOLMUL;
 
        // clear watchdog
