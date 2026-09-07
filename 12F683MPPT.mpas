@@ -203,7 +203,9 @@ begin
        adc_cur_last:=adc_cur;
        // Avoid ringing at falling edge
        while TMR2IF_bit=0 do ;
+{$ifndef ADC_LOOP}
        Delay_80us;                     // 10kHz, 100us, 100-20=80us
+{$endif}
        // adc read
        adc_cur:=ADC_Read(cur_port);
        adc_vol:=ADC_Read(vol_port);
