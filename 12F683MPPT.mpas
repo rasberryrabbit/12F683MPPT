@@ -199,6 +199,10 @@ begin
          LED1 := not LED1;
        end;
 
+       // switch reset
+       if Write_OPAMP=0 then
+         Delay_ms(2500);
+
        // save previous adc values
        adc_cur_last:=adc_cur;
        // Avoid ringing at falling edge
