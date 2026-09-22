@@ -41,6 +41,7 @@ const
    _CHECK_P_LOW = 2;               // 500 div _UPDATE_INT;
    _PWM_CHECK = 4500;
    _dead_band_limit = 2000;        // 1000, 500 = RC filter(low noise), 2000 = high noise = VOLMUL * 500
+                                   // 500 = 250(~adc 20%)+250(~adc 20%)
 
    cLM358_diff = 0;
    adc_max_loop = 4;               // 8
