@@ -282,7 +282,7 @@ begin
            Inc(cPWM);
            SetPWM(cPWM);
          end else begin
-           SetPWM(PWM_MAX);
+           SetPWM(PWM_END);
            flag_inc:=false;
          end;
        end else begin
