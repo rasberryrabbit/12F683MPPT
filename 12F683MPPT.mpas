@@ -25,12 +25,11 @@ program _12F683MPPT;
 {$define Write_OPAMP_DIFF}
 { $define ADC_LOOP}
 {$define ADC_AVG}
-{ $define FIX_LOW_CURR}
 
 const
    PWM_MAX = 200;
-   PWM_MIN = PWM_MAX * 10 div 100;
-   PWM_START = PWM_MAX * 20 div 100;
+   PWM_MIN = PWM_MAX * 2 div 100;
+   PWM_START = PWM_MAX * 4 div 100;
    PWM_MID = PWM_MAX div 2-5;
 
    TMR1L_LOAD=$17;
@@ -38,14 +37,13 @@ const
 
    VOLMUL = 4;                     // 25 div 6 <- 25V(1024) : 6A(1024), don't exceed 8
    //CURDIV = 2;
-   _UPDATE_INT = 40;               // 25ms+
-   _CHECK_P_LOW = 2;               // 500 div _UPDATE_INT;
+   _UPDATE_INT = 50;               // 25ms+
    _PWM_CHECK = 4500;
-   _NOISE_MARGIN = 3;
+   _NOISE_MARGIN = 2;
+   _dead_band_limit = 50;
 
    cLM358_diff = 0;
    adc_max_loop = 4;               // 8
-   curr_yield = 3;
 
    cur_port = 0;
    vol_port = 3;
@@ -61,9 +59,9 @@ var
 
    LED1_tm : word;
    prevtime, powertime, watchdog : word;
-   adc_vol, adc_cur, adc_cur_last : word;
+   adc_vol, adc_cur, raw_vol : word;
    power_prev, power_curr, dead_band : dword;
-   i, LM358_diff, cPWM, power_low : byte;
+   i, LM358_diff, cPWM : byte;
    flag_inc : boolean;
    vtmp, ctmp : word;
 
@@ -129,7 +127,6 @@ begin
      LED1:=0;
      LED1_tm:=200;
      TICK_1000:=0;
-     Power_low:=0;
 
      LM358_diff:=cLM358_diff;
      Delay_100ms;
@@ -191,7 +188,6 @@ begin
      LED1:=0;
      clrwdt;
      watchdog:=0;
-     adc_cur_last:=0;
 
      while True do begin
        // LED
@@ -205,8 +201,6 @@ begin
        if Write_OPAMP=0 then
          Delay_ms(2500);
 
-       // save previous adc values
-       adc_cur_last:=adc_cur;
        // Avoid ringing at falling edge
        while TMR2IF_bit=0 do ;
 {$ifndef ADC_LOOP}
@@ -214,23 +208,23 @@ begin
 {$endif}
        // adc read
        adc_cur:=ADC_Read(cur_port);
-       adc_vol:=ADC_Read(vol_port);
+       raw_vol:=ADC_Read(vol_port);
 {$ifdef ADC_LOOP}
        for i:=1 to adc_max_loop-1 do begin
          ctmp:=ADC_Read(cur_port);
          vtmp:=ADC_Read(vol_port);
 {$ifdef ADC_AVG}
-         adc_vol:=(adc_vol+vtmp) div 2;
+         raw_vol:=(raw_vol+vtmp) div 2;
          adc_cur:=(adc_cur+ctmp) div 2;
 {$else}
          if ctmp < adc_cur then begin
            adc_cur:=ctmp;
-           adc_vol:=vtmp;
+           raw_vol:=vtmp;
          end;
 {$endif}
        end;
 {$endif}
-       adc_vol:=adc_vol * VOLMUL;
+       adc_vol:=raw_vol * VOLMUL;
 
        // clear watchdog
        vtmp:=TICK_1000;
@@ -248,50 +242,36 @@ begin
        power_prev:= power_curr;
        power_curr:= dword(adc_vol * adc_cur);
 
-       dead_band := dword( adc_vol + adc_cur ) * VOLMUL * _NOISE_MARGIN;
+       dead_band := dword( raw_vol + adc_cur ) * VOLMUL * _NOISE_MARGIN;
        // dead band limit = (2 + 2) * VOLMUL * _NOISE_MARGIN, 2 = ADC_ERROR
-       if dead_band < 50 then
-         dead_band := 50;
+       if dead_band < _dead_band_limit then
+         dead_band := _dead_band_limit;
 
        // led indicating and check low current
-       if adc_cur>LM358_diff then begin
+       if adc_cur>(LM358_diff + 5) then begin
          // checking power
          if power_curr = power_prev then begin
            LED1_tm:=500;
-           power_low:=0;
            continue;
          end else if power_curr < power_prev then begin
            if power_prev-power_curr < dead_band then begin
              LED1_tm:=500;
-             power_low:=0;
              continue;
            end;
            LED1_tm:=150;
-           Inc(power_low);
-{$IFDEF FIX_LOW_CURR}
-           // avoid low current
-           if (power_low>=_CHECK_P_LOW) and (adc_cur<adc_cur_last) then
-             flag_inc:=True
-           else
-{$ENDIF}
-             flag_inc:=not flag_inc;
+           flag_inc:=not flag_inc;
          end else begin
            if power_curr-power_prev < dead_band then begin
              LED1_tm:=500;
-             power_low:=0;
              continue;
            end;
            LED1_tm:=300;
-           power_low:=0;
          end;
        end else begin
          LED1_tm:=150;
-         SetPWM(PWM_START);
          flag_inc:=True;
          power_curr:=0;
          adc_cur:=0;
-         Power_low:=0;
-         continue;
        end;
 
        // set PWM value
