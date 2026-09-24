@@ -28,8 +28,9 @@ program _12F683MPPT;
 
 const
    PWM_MAX = 200;
-   PWM_MIN = PWM_MAX * 2 div 100;
-   PWM_START = PWM_MAX * 4 div 100;
+   PWM_MIN = PWM_MAX * 6 div 100;
+   PWM_START = PWM_MAX * 10 div 100;
+   PWM_END = PWM_MAX * 45 div 100;
    PWM_MID = PWM_MAX div 2-5;
 
    TMR1L_LOAD=$17;
@@ -117,7 +118,7 @@ begin
      TRISIO2_bit:=1;
      PR2:=(PWM_MAX shr 1)-1; // (PR2 + 1) * 2 -> {CCPR1L: DC1B1, Ignore DC1B0}
      CCP1CON:=%00001111;     // PWM active low
-     SetPWM(PWM_START);
+     SetPWM(PWM_MIN);        // Charging Bootstrap
      TRISIO2_bit:=0;         // PWM Output
      TMR2IF_bit:=0;
      TMR2ON_bit:=1;
@@ -277,7 +278,7 @@ begin
        // set PWM value
        cPWM:=GetPWM();
        if flag_inc then begin
-         if cPWM<PWM_MAX then begin
+         if cPWM<PWM_END then begin
            Inc(cPWM);
            SetPWM(cPWM);
          end else begin
