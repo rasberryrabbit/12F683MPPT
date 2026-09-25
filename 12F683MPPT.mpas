@@ -30,7 +30,7 @@ const
    PWM_MAX = 200;
    PWM_MIN = PWM_MAX * 6 div 100;
    PWM_START = PWM_MAX * 10 div 100;
-   PWM_END = PWM_MAX * 45 div 100;
+   PWM_END = PWM_MAX * 90 div 100;
    PWM_MID = PWM_MAX div 2-5;
 
    TMR1L_LOAD=$17;
@@ -278,6 +278,15 @@ begin
          flag_inc:=True;
          power_curr:=0;
          adc_cur:=0;
+         cPWM := GetPWM();
+         if cPWM < PWM_MID then begin
+           Inc(cPWM);
+           SetPWM(cPWM);
+         end else if cPWM > PWM_MID then begin
+           Dec(cPWM);
+           SetPWM(cPWM);
+         end;
+         continue;
        end;
 
        // set PWM value
