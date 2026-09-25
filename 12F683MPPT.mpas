@@ -254,7 +254,7 @@ begin
        end;
 
        // led indicating and check low current
-       if adc_cur>(LM358_diff + 5) then begin
+       if adc_cur>(LM358_diff + 2) then begin
          // checking power
          if power_curr = power_prev then begin
            LED1_tm:=500;
