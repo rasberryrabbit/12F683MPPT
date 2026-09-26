@@ -10683,7 +10683,7 @@
 		(dnp no)
 		(uuid "68818ae7-cd85-4758-9124-5a7c61d7db36")
 		(property "Reference" "C2"
-			(at 180.848 67.056 0)
+			(at 180.34 64.77 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10694,7 +10694,7 @@
 			)
 		)
 		(property "Value" "1u"
-			(at 181.102 72.644 0)
+			(at 180.594 67.056 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10704,7 +10704,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_THT:C_Disc_D7.5mm_W4.4mm_P5.00mm"
 			(at 185.1152 73.66 0)
 			(hide yes)
 			(show_name no)
