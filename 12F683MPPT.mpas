@@ -65,8 +65,6 @@ var
    i, LM358_diff, cPWM : byte;
    flag_inc : boolean;
    vtmp, ctmp : word;
-   startup_timer : word;
-   startup_mode : boolean;
 
 procedure Interrupt(); iv 0x0004; ics ICS_AUTO;
 begin
@@ -191,7 +189,6 @@ begin
      LED1:=0;
      clrwdt;
      watchdog:=0;
-     startup_mode := false;
 
      while True do begin
        // LED
@@ -247,9 +244,9 @@ begin
        power_curr:= dword(adc_vol * adc_cur);
 
        dead_band := dword( raw_vol + adc_cur ) * VOLMUL * _NOISE_MARGIN;
-       // 0.68% limit for dead band, (0.5~1%)
-       if dead_band > (power_curr div 128 - power_curr div 1024) then
-         dead_band := power_curr div 128 - power_curr div 1024;
+       // 0.538% limit for dead band, (0.5~1%)
+       if dead_band > (power_curr div 256 + power_curr div 1024 + power_curr div 2048) then
+         dead_band := power_curr div 256 + power_curr div 1024 + power_curr div 2048;
 
        // dead band limit = (2 + 2) * VOLMUL * _NOISE_MARGIN, 2 = ADC_ERROR
        if dead_band < _dead_band_limit then
@@ -257,16 +254,7 @@ begin
 
        // led indicating and check low current
        if adc_cur>(LM358_diff + 2) then begin
-         // startup delay
-         if startup_mode then begin
-           if (tick_diff(TICK_1000, startup_timer)<3000) then begin
-             LED1_tm:=1000;
-             flag_inc := raw_vol<400;
-           end else
-             startup_mode:=False;
-         end;
          // normal operation
-         if not startup_mode then begin
            // checking power
            if power_curr = power_prev then begin
              LED1_tm:=500;
@@ -285,11 +273,8 @@ begin
              end;
              LED1_tm:=300;
            end;
-         end;
        end else begin
          LED1_tm:=150;
-         startup_mode:=True;
-         startup_timer:=TICK_1000;
          flag_inc:=True;
          power_curr:=0;
          adc_cur:=0;
