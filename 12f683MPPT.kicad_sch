@@ -3890,6 +3890,16 @@
 		)
 		(uuid "67dd3018-4e6b-4ded-b0af-e8fd2294b614")
 	)
+	(text "C2 = 0,47u : PWM>8kHz and FET Qg<50nS"
+		(exclude_from_sim no)
+		(at 189.484 47.244 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b98de2f2-2967-4c83-8264-9528acc4e1a1")
+	)
 	(text "Optional"
 		(exclude_from_sim no)
 		(at 61.214 60.706 0)
