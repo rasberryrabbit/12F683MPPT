@@ -132,6 +132,8 @@ begin
      ClrWDT;
 {$ifdef DEADBAND_SWITCH}
      deadband_lvl:=EEPROM_Read(0);
+     if deadband_lvl=$FF then
+       deadband_lvl:=$1F;
      // switch press on boot, Select 0.53% | 0.56% toggle
      if Write_OPAMP=0 then begin
        deadband_lvl:=not deadband_lvl;
